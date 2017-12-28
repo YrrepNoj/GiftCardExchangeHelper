@@ -11,33 +11,21 @@ hitWords = ["amazon", "amz"]
 # TODO: Improve upon this logic
 def determineValidity(submission):
 	opTitle = submission.title.lower()
-	opTitle = opTitle.split("[W]")[0]
+	opTitle = opTitle.split("[w]")[0]
 	print(opTitle)
 
 	if any(string in opTitle for string in hitWords):
 		return True
-	return False
-
-	# print (submission.title)
-	# print (submission.author)
-		
-	# print (submission.author_flair_text)
-	# print (submission.url)
-	# if(submission.selftext == ""):
-	# 	print (submission.selftext)
-	# else:
-	# 	print ("There was no selftext!")
-
-	# comments = submission.comments.list()
-	# for comment in comments:
-	# 	print(comment.body)
-	# print ("There are " + str(submission.num_comments) + " comments on this post.")
-	# print("\n\n")
-
+	return True
 	
-# TODO: Implement this function
 def notifyMaster():
-	print("I am supposed to be notifying the master")
+	finalMessage = ""
+
+	for validPost in validPosts:
+		finalMessage += '[' + validPost.title.lower() + '] (%s)\n\n' % validPost.url
+
+	redditClient.redditor(masterUser).message("ValidPosts",  finalMessage)
+
 
 
 
@@ -52,10 +40,10 @@ def notifyMaster():
 redditClient = praw.Reddit(client_id=clientID,
                      client_secret=clientSecret,
                      password=redditPassword,
-                     user_agent='testscript by /u/yrrep',
+                     user_agent='GFX Helper Script',
                      username=redditUsername)
 					 
-print ("Logged in as user /u/" + redditUsername + "..")
+print ("Logged in..")
 
 print ("Grabbing /r/GiftCardExchange..")
 gfxSubreddit = redditClient.subreddit("GiftCardExchange")
@@ -70,9 +58,10 @@ while(True):
 			validPosts.append(submission)
 
 	if len(validPosts) > 0:
-		notifyMaster
+		notifyMaster()
 		validPosts = []
 
+	print ("Sleeping for 15 seconds..")
 	time.sleep(15)
 
 
