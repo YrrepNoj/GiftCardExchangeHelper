@@ -1,39 +1,11 @@
 import praw
 import time
 from AccountInfo import *
+from Notify import *
+from Validity import *
 
 processedList = []
 validPosts = []
-hitWords = ["amazon", "amz"]
-
-
-# Extremely basic check to determine if a post if valid
-# TODO: Improve upon this logic
-def determineValidity(submission):
-	opTitle = submission.title.lower()
-	opTitle = opTitle.split("[w]")[0]
-	print(opTitle)
-
-	if any(string in opTitle for string in hitWords):
-		return True
-	return True
-	
-def notifyMaster():
-	finalMessage = ""
-
-	for validPost in validPosts:
-		finalMessage += '[' + validPost.title.lower() + '] (%s)\n\n' % validPost.url
-
-	redditClient.redditor(masterUser).message("ValidPosts",  finalMessage)
-
-
-
-
-
-
-
-
-
 
 
 ## *************************** MAIN *************************** ##
@@ -43,7 +15,7 @@ redditClient = praw.Reddit(client_id=clientID,
                      user_agent='GFX Helper Script',
                      username=redditUsername)
 					 
-print ("Logged in..")
+print ("Logged in as user (%s).." % redditUsername)
 
 print ("Grabbing /r/GiftCardExchange..")
 gfxSubreddit = redditClient.subreddit("GiftCardExchange")
@@ -58,7 +30,7 @@ while(True):
 			validPosts.append(submission)
 
 	if len(validPosts) > 0:
-		notifyMaster()
+		notifyMaster(redditClient, validPosts)
 		validPosts = []
 
 	print ("Sleeping for 15 seconds..")
