@@ -9,7 +9,7 @@ hitWords = ["amazon", "amz"]
 def determineValidity(submission):
 	opTitle = submission.title.lower()
 	opTitle = opTitle.split("[w]")[0]
-
+	print (opTitle)
 	if any(string in opTitle for string in hitWords):
 		return True
-	return True
+	return False
