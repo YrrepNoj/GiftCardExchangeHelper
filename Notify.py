@@ -1,5 +1,6 @@
 import praw
 from AccountInfo import *
+import logging
 
 def notifyMaster(redditClient, validPosts):
 	finalMessage = ""
@@ -9,4 +10,5 @@ def notifyMaster(redditClient, validPosts):
 
 	redditClient.redditor(masterUser).message("ValidPosts",  finalMessage)
 
+	logging.info("Notifying master with %d new valid posts", len(validPosts))
 	return finalMessage

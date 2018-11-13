@@ -1,4 +1,5 @@
 import praw
+import logging
 
 
 hitWords = ["amazon", "amz"]
@@ -11,5 +12,6 @@ def determineValidity(submission):
 	opTitle = opTitle.split("[w]")[0]
 
 	if any(string in opTitle for string in hitWords):
+		logging.info("Found a valid post: %s", opTitle)
 		return True
 	return True
