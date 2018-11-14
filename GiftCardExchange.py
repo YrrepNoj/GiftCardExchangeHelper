@@ -8,6 +8,7 @@ import logging.config
 
 processedList = []
 validPosts = []
+timeLastRefreshed = 0
 
 ## *************************** MAIN *************************** ##
 logging.basicConfig(filename="app.log", filemode="w", format="%(asctime)s - %(filename)s - %(levelname)s - %(message)s", level=logging.INFO, datefmt="%d-%b-%y %H:%M:%S")
@@ -25,10 +26,11 @@ gfxSubreddit = redditClient.subreddit("GiftCardExchange")
 
 while (True):
     for submission in gfxSubreddit.new(limit=10):
-        if submission.id in processedList:
+
+        # check to see if this is a new post we haven't seen before
+        if submission.created_utc < timeLastRefreshed:
             continue
 
-        processedList.append(submission.id)
         if determineValidity(submission):
             validPosts.append(submission)
 
@@ -37,6 +39,7 @@ while (True):
         validPosts = []
 
     logging.info("Sleeping for 15 seconds..")
+    timeLastRefreshed = time.time()
     time.sleep(15)
 
 
