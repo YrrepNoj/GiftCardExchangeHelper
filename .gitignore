@@ -1,2 +1,5 @@
 AccountInfo.py
 __pycache__/
+.idea/
+*.pyc
+*.log
