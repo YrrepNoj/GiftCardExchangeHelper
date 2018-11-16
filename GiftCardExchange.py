@@ -24,6 +24,16 @@ logging.info("Logged in as user (%s).." % redditUsername)
 logging.info("Grabbing /r/GiftCardExchange..")
 gfxSubreddit = redditClient.subreddit("GiftCardExchange")
 
+
+logging.info("Connecting to smtplib server")
+try:
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.ehlo()
+    server.starttls()
+    server.login(gmailUser, gmailPassword)
+except:
+    logging.error("Unable to connect to smtplib server")
+
 while (True):
     for submission in gfxSubreddit.new(limit=10):
 
@@ -35,7 +45,7 @@ while (True):
             validPosts.append(submission)
 
     if len(validPosts) > 0:
-        notifyMaster(redditClient, validPosts)
+        notifyMaster(redditClient, server, validPosts)
         validPosts = []
 
     logging.info("Sleeping for 15 seconds..")
