@@ -53,7 +53,6 @@ def sendTextNotification(server):
 
     return
 
-
 def sendRedditMessage(redditClient, validPosts):
     finalMessage = ""
 
@@ -61,7 +60,25 @@ def sendRedditMessage(redditClient, validPosts):
     for validPost in validPosts:
         finalMessage += '[' + validPost.title.lower() + '] (%s)\n\n' % validPost.url
 
+        # Find and handle the 'rep' for each submission
+        gcxRep = findRep(validPost.author)
+        for repSubmission in gcxRep:
+            finalMessage += "* [" + repSubmission.title.lower() + "] (%s)\n\n" % repSubmission.url
+        if len(gcxRep) == 0:
+            finalMessage += "* NO REP POSTS FOUND"
+
     # Send the PM to the user
     redditClient.redditor(masterUser).message("ValidPosts",  finalMessage)
     logging.info("Notifying master with %d new valid posts", len(validPosts))
     return
+
+def findRep(redditor):
+    repPosts = []
+
+    # Find rep by searching the users post history
+    allSubmissions = redditor.submissions.top('all')
+    for submission in allSubmissions:
+        if submission.subreddit.display_name.lower() == "gcxrep":
+            repPosts.append(submission)
+
+    return repPosts
