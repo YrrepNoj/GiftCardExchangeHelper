@@ -1,8 +1,10 @@
 import praw
+from praw.models import Message
 import time
 from AccountInfo import *
 from Notify import *
 from Validity import *
+from Request import *
 import logging
 import logging.config
 
@@ -35,6 +37,14 @@ except:
     logging.error("Unable to connect to smtplib server")
 
 while (True):
+    # Process any new private messages we have received to see if another user wants use to look up exchanges for them
+    for item in redditClient.inbox.unread(limit=None):
+        if isinstance(item, Message):
+            request = handleNewRequest(item)
+            if request.isValidRequest():
+                logging.info("Incrementing the searchDict for '%s' after receiving a new request from '%s'", request.card, item.author)
+                searchDict[request.card] = searchDict[request.card] + 1
+
     for submission in gfxSubreddit.new(limit=10):
 
         # check to see if this is a new post we haven't seen before
