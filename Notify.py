@@ -65,7 +65,7 @@ def sendRedditMessage(redditClient, validPosts):
         for repSubmission in gcxRep:
             finalMessage += "* [" + repSubmission.title.lower() + "] (%s)\n\n" % repSubmission.url
         if len(gcxRep) == 0:
-            finalMessage += "* NO REP POSTS FOUND"
+            finalMessage += "* NO REP POSTS FOUND\n\n"
 
     # Send the PM to the user
     redditClient.redditor(masterUser).message("ValidPosts",  finalMessage)
