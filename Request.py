@@ -1,10 +1,7 @@
 import logging
+from RandomUtil import *
 
-searchDict = {"amazon": 0, "apple": 0, "starbucks": 0, "googleplay": 0, "itunes": 0} #TODO turn this strings into final constants?
-searchPhrase = "Search: "
-emailPhrase = "Email: "
-phoneNumberPhrase = "Phone#: "
-phoneProviderPhrase = "Provider: "
+
 
 # TODO: This class can run into a lot of issues because of how we are using 'None' in the constructor. Fix.
 class Request:
@@ -37,7 +34,7 @@ def handleNewRequest(messageRequest):
     logging.info("Received a private message from %s", messageRequest.author)
 
     bodyList = messageRequest.body.split("\n")
-    logging.info("Message from %s: %s", messageRequest.author, bodyList())
+    logging.info("Message from %s: %s", messageRequest.author, bodyList)
 
     # Go through the text body and generate the request object
     request = Request()
@@ -45,19 +42,19 @@ def handleNewRequest(messageRequest):
     for bodyString in bodyList:
 
         # Giftcards they are searching for
-        if (len(bodyString) > len(searchPhrase)) and (searchPhrase == bodyString[0:8]):
-            request.card = bodyString.split(": "[1])
+        if (len(bodyString) > len(searchPhraseString)) and (searchPhraseString == bodyString[0:8]):
+            request.card = bodyString.split(": ")[1]
 
         # EmailAAddress used to notify the user
-        elif (len(bodyString) > len(emailPhrase)) and (emailPhrase == bodyString[0:7]):
+        elif (len(bodyString) > len(emailPhraseString)) and (emailPhraseString == bodyString[0:7]):
             request.emailAddress = bodyString.split(": ")[1]
 
         # PhoneNumber used to notify the user
-        elif (len(bodyString) > len(phoneNumberPhrase)) and (phoneNumberPhrase == bodyString[0:8]):
+        elif (len(bodyString) > len(phoneNumberPhraseString)) and (phoneNumberPhraseString == bodyString[0:8]):
             request.phoneNumber = bodyString.split(": ")[1]
 
         # PhoneProvider the user has
-        elif (len(bodyString) > len(phoneProviderPhrase)) and (phoneProviderPhrase == bodyString[0:10]):
+        elif (len(bodyString) > len(phoneProviderPhraseString)) and (phoneProviderPhraseString == bodyString[0:10]):
             request.phoneProvider = bodyString.split(": ")[1]
 
     messageRequest.mark_read()
