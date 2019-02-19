@@ -68,24 +68,24 @@ def sendRedditMessage(redditClient, validPosts, redditUser=masterUser):
         finalMessage += '[' + validPost.title.lower() + '] (%s)\n\n' % validPost.url
 
         # Find and handle the 'rep' for each submission
-        gcxRep = findRep(validPost.author)
+        gcxRep = findRep(redditClient, validPost.author)
         for repSubmission in gcxRep:
             finalMessage += "* [" + repSubmission.title.lower() + "] (%s)\n\n" % repSubmission.url
         if len(gcxRep) == 0:
-            finalMessage += "* NO REP POSTS FOUND"
+            finalMessage += "* NO REP POSTS FOUND FOR " + validPost.author.name + "\n\n"
 
     # Send the PM to the user
     redditClient.redditor(redditUser.name).message("ValidPosts",  finalMessage)
     logging.info("Notifying master with %d new valid posts", len(validPosts))
     return
 
-def findRep(redditor):
+def findRep(redditClient, redditor):
     repPosts = []
 
-    # Find rep by searching the users post history
-    allSubmissions = redditor.submissions.top('all')
-    for submission in allSubmissions:
-        if submission.subreddit.display_name.lower() == "gcxrep":
+    # Find rep by searching through the gcxrep subreddit
+    searchString = "author:" + redditor.name
+    for submission in redditClient.subreddit("gcxrep").search("author:" + searchString):
+        if submission.author.name == redditor.name:
             repPosts.append(submission)
 
     return repPosts

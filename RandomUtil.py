@@ -11,7 +11,7 @@ phoneProviderPhraseString = "Provider: "
 
 amazonHitWords = ["amazon", "amz"]
 itunesHitWords = ["itunes", "apple"]
-googlePlayHitWords = ["googleplay", "google play"]
+googlePlayHitWords = ["googleplay", "google play", "gplay"]
 starbucksHitWords = ["starbucks"]
 
 hitWordDict = {"amazon": amazonHitWords, "starbucks": starbucksHitWords, "googleplay": googlePlayHitWords, "itunes": itunesHitWords}

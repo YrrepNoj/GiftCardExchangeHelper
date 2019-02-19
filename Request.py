@@ -17,9 +17,13 @@ class Request:
         finalString = ""
         finalString += "Card(s): " + self.card
         finalString += "\nRedditUser: " + self.redditUser.name
-        finalString += "\nEmailAddress: " + self.emailAddress
-        finalString += "\nphoneNumber: " + self.phoneNumber
-        finalString += "\nphoneProvider: " + self.phoneProvider
+
+        if self.emailAddress:
+            finalString += "\nEmailAddress: " + self.emailAddress
+        if self.phoneNumber:
+            finalString += "\nphoneNumber: " + self.phoneNumber
+        if self.phoneProvider:
+            finalString += "\nphoneProvider: " + self.phoneProvider
         return finalString
 
     def isValidRequest(self):
@@ -42,20 +46,20 @@ def handleNewRequest(messageRequest):
     for bodyString in bodyList:
 
         # Giftcards they are searching for
-        if (len(bodyString) > len(searchPhraseString)) and (searchPhraseString == bodyString[0:8]):
-            request.card = bodyString.split(": ")[1]
+        if (len(bodyString) > len(searchPhraseString)) and (searchPhraseString.lower() == bodyString[0:8].lower()):
+            request.card = bodyString.split(": ")[1].lower()
 
         # EmailAAddress used to notify the user
-        elif (len(bodyString) > len(emailPhraseString)) and (emailPhraseString == bodyString[0:7]):
-            request.emailAddress = bodyString.split(": ")[1]
+        elif (len(bodyString) > len(emailPhraseString)) and (emailPhraseString.lower() == bodyString[0:7].lower()):
+            request.emailAddress = bodyString.split(": ")[1].lower()
 
         # PhoneNumber used to notify the user
-        elif (len(bodyString) > len(phoneNumberPhraseString)) and (phoneNumberPhraseString == bodyString[0:8]):
-            request.phoneNumber = bodyString.split(": ")[1]
+        elif (len(bodyString) > len(phoneNumberPhraseString)) and (phoneNumberPhraseString.lower() == bodyString[0:8].lower()):
+            request.phoneNumber = bodyString.split(": ")[1].lower()
 
         # PhoneProvider the user has
-        elif (len(bodyString) > len(phoneProviderPhraseString)) and (phoneProviderPhraseString == bodyString[0:10]):
-            request.phoneProvider = bodyString.split(": ")[1]
+        elif (len(bodyString) > len(phoneProviderPhraseString)) and (phoneProviderPhraseString.lower() == bodyString[0:10].lower()):
+            request.phoneProvider = bodyString.split(": ")[1].lower()
 
     messageRequest.mark_read()
     return request
