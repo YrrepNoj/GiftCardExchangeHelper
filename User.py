@@ -1,4 +1,3 @@
-#TODO: Im not sure I like the name of this class.. try to think of a better one..
 class User:
     def __init__(self, redditUser, request):
         self.redditUser = redditUser

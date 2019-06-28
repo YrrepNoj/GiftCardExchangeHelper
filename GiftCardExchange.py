@@ -14,6 +14,7 @@ processedList = []
 validPosts = []
 timeLastRefreshed = 0
 
+# TODO: Make this a real main method..
 ## *************************** MAIN *************************** ##
 logging.basicConfig(filename="app.log", filemode="w", format="%(asctime)s - %(filename)s - %(levelname)s - %(message)s", level=logging.INFO, datefmt="%d-%b-%y %H:%M:%S")
 
@@ -51,6 +52,9 @@ while (True):
 
                 user = User(item.author, request)
                 searchDict[request.card].append(user)
+            else:
+                logging.info("Received an invalid request from `%s`. Sending clarifying response message now.", item.author.name)
+                item.reply(clarificationResponse)
 
     for submission in gfxSubreddit.new(limit=10):
         # check to see if this is a new post we haven't seen before

@@ -15,23 +15,16 @@ class Request:
 
     def __str__(self):
         finalString = ""
-        finalString += "Card(s): " + self.card
-        finalString += "\nRedditUser: " + self.redditUser.name
-
-        if self.emailAddress:
-            finalString += "\nEmailAddress: " + self.emailAddress
-        if self.phoneNumber:
-            finalString += "\nphoneNumber: " + self.phoneNumber
-        if self.phoneProvider:
-            finalString += "\nphoneProvider: " + self.phoneProvider
+        finalString += "Card(s): " + str(self.card)
+        finalString += "\nRedditUser: " + str(self.redditUser.name)
+        finalString += "\nEmailAddress: " + str(self.emailAddress)
+        finalString += "\nphoneNumber: " + str(self.phoneNumber)
+        finalString += "\nphoneProvider: " + str(self.phoneProvider)
         return finalString
 
     def isValidRequest(self):
-        if self.card is None or self.card not in searchDict.keys():
+        if self.card is None or self.card not in searchDict.keys() or self.redditUser is None:
             return False
-        if self.redditUser is None:
-            return False
-
         return True
 
 def handleNewRequest(messageRequest):
@@ -45,6 +38,7 @@ def handleNewRequest(messageRequest):
     request.redditUser = messageRequest.author
     for bodyString in bodyList:
 
+        # TODO: This could use a revamp too.. this seems too easy for the user to mess up..
         # Giftcards they are searching for
         if (len(bodyString) > len(searchPhraseString)) and (searchPhraseString.lower() == bodyString[0:8].lower()):
             request.card = bodyString.split(": ")[1].lower()
