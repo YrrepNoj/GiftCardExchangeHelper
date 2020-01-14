@@ -1,5 +1,6 @@
 AccountInfo.py
 __pycache__/
+ActivityLog.txt
 .idea/
 *.pyc
 *.log
