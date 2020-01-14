@@ -1,13 +1,13 @@
-import praw
 import logging
+from Request import *
+from RandomUtil import *
 
 
-hitWords = ["amazon", "amz"]
 
 
-# Extremely basic check to determine if a post if valid
-# TODO: Improve upon this logic
-def determineValidity(submission):
+
+# Extremely basic check to determine if a post is what we are looking for
+def determineExchangeType(submission):
 
     opFlair = submission.link_flair_text
     opTitle = submission.title.lower()
@@ -15,11 +15,12 @@ def determineValidity(submission):
 
     # Check to ensure the exchange hasn't already been completed
     if opFlair is not None and opFlair.lower() == "closed":
-        return False
+        return ""
 
-    # Check to see if any of the hitWords are contained in the title
-    if any(string in opTitle for string in hitWords):
-        logging.info("Found a valid post: %s", opTitle)
-        return True
+    for cardType in searchDict:
+        if len(searchDict[cardType]) > 0:
+            if any(string in opTitle for string in hitWordDict[cardType]):
+                logging.info("Found a valid %s post: %s", cardType, opTitle)
+                return cardType
 
-    return False
+    return ""

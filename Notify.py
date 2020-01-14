@@ -8,15 +8,25 @@ def notifyMaster(redditClient, server, validPosts):
     if masterUser:
         sendRedditMessage(redditClient, validPosts)
 
-    if emailReceiver:
-        sendEmail(server, validPosts)
-
-    if phoneProvider and phoneString:
-        sendTextNotification(server)
-
+    # if emailReceiver:
+    #     sendEmail(server, validPosts)
+    #
+    # if phoneProvider and phoneString:
+    #     sendTextNotification(server)
     return
 
-def sendEmail(server, validPosts):
+def notifyUser(redditClient, user, server, posts):
+    if user.redditUser is not None:
+        sendRedditMessage(redditClient, posts, redditUser = user.redditUser)
+
+    if user.emailAddress is not None:
+        sendEmail(server, posts, user.emailAddress)
+
+    if user.phoneNumber is not None and user.phoneProvider is not None:
+        sendTextNotification(server, user.phoneNumber, user.phoneProvider)
+
+
+def sendEmail(server, validPosts, emailReceiver):
     emailMessage = ""
 
     # Formatting the email
@@ -33,14 +43,11 @@ def sendEmail(server, validPosts):
 
     return
 
-def sendTextNotification(server):
+def sendTextNotification(server, phoneNumber, phoneProvider):
     phoneText = "A giftcard exchange has been found. Check your reddit account for more information!"
 
-    if phoneString == "":
-        return
-
     if phoneProvider == "verizon":
-        phoneEmailString = phoneString + "@vtext.com"
+        phoneEmailString = phoneNumber + "@vtext.com"
     else:
         logging.warn("Unsupported phone provider: %s", phoneProvider)
         return
@@ -53,7 +60,7 @@ def sendTextNotification(server):
 
     return
 
-def sendRedditMessage(redditClient, validPosts):
+def sendRedditMessage(redditClient, validPosts, redditUser=masterUser):
     finalMessage = ""
 
     # Formatting the final message for a reddit PM
@@ -61,24 +68,24 @@ def sendRedditMessage(redditClient, validPosts):
         finalMessage += '[' + validPost.title.lower() + '] (%s)\n\n' % validPost.url
 
         # Find and handle the 'rep' for each submission
-        gcxRep = findRep(validPost.author)
+        gcxRep = findRep(redditClient, validPost.author)
         for repSubmission in gcxRep:
             finalMessage += "* [" + repSubmission.title.lower() + "] (%s)\n\n" % repSubmission.url
         if len(gcxRep) == 0:
-            finalMessage += "* NO REP POSTS FOUND\n\n"
+            finalMessage += "* NO REP POSTS FOUND FOR " + validPost.author.name + "\n\n"
 
     # Send the PM to the user
-    redditClient.redditor(masterUser).message("ValidPosts",  finalMessage)
+    redditClient.redditor(redditUser.name).message("ValidPosts",  finalMessage)
     logging.info("Notifying master with %d new valid posts", len(validPosts))
     return
 
-def findRep(redditor):
+def findRep(redditClient, redditor):
     repPosts = []
 
-    # Find rep by searching the users post history
-    allSubmissions = redditor.submissions.top('all')
-    for submission in allSubmissions:
-        if submission.subreddit.display_name.lower() == "gcxrep":
+    # Find rep by searching through the gcxrep subreddit
+    searchString = "author:" + redditor.name
+    for submission in redditClient.subreddit("gcxrep").search("author:" + searchString):
+        if submission.author.name == redditor.name:
             repPosts.append(submission)
 
     return repPosts
