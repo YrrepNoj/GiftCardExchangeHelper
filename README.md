@@ -17,15 +17,15 @@ In the second image, you see the result of what the bot provides after we reques
 
 ### Getting Started
 * This project will require:
-- Python 3.5+
-- Praw (https://praw.readthedocs.io/en/latest/)
+   - Python 3.5+
+   - Praw (https://praw.readthedocs.io/en/latest/)
 
 ### Retrospective
 * **Lessons Learned**
    - 
 * **Limitations and known issues**
-   - This tool isn't very scaleable in terms of the number of users.
    - Might be a bug with finding archieved 'reputation' for the Reddit users. 
+   - Currently only supports verizon for SMS messaging
 
 * **Future Possibilities**
    - Configure the service to run as a single web service that clients can then utilize instead of the clients needing to run the service on their own machines.
